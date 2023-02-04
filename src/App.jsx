@@ -15,8 +15,8 @@ function App() {
   const [isFlipping, setIsFlipping] = useState(false);
 
   const handleCardClick = index => {
+    setIsFlipping(true);
     if (index === tiers[tier].happyFace) {
-      setIsFlipping(true);
       setIsWin(true);
       setTimeout(() => {
         setIsFlipping(false);
@@ -24,10 +24,10 @@ function App() {
         setTier(tier + 1);
       }, 1000);
     } else {
-      setIsFlipping(true);
       setIsLose(true);
     }
   };
+  
 
   useEffect(() => {
     if (tier === tiers.length) {
@@ -41,12 +41,12 @@ function App() {
         <div className="tier">
           {Array.from({ length: tiers[tier].size }, (_, i) => (
             <div
-              key={i}
-              className={`card ${isFlipping ? "flipping" : ""} ${
-                i === tiers[tier].happyFace ? "correct" : "incorrect"
-              } ${isWin ? "win" : ""} ${isLose && isFlipping ? "lose" : ""}`}
-              onClick={() => handleCardClick(i)}
-            />
+            key={i}
+            className={`card ${isFlipping ? "flipping" : ""} ${
+              i === tiers[tier].happyFace ? (isWin ? "win" : "") : (isLose ? "lose" : "")
+            }`}
+            onClick={() => handleCardClick(i)}
+          />          
           ))}
         </div>
       ) : (
