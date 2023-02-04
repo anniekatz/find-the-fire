@@ -1,76 +1,54 @@
-import React, { useState } from 'react';
-import './App2.css'
-
-const Card = ({ front, back, onClick, flipped }) => {
-  return (
-    <div className="card-container" onClick={onClick}>
-      <div className={`card ${flipped ? 'flipped' : ''}`}>
-        <div className="front">{front}</div>
-        <div className="back">{back}</div>
-      </div>
-    </div>
-  );
-};
+import React, { useState } from "react";
+import Card from "./Card";
+import "./Card.css";
 
 const App = () => {
   const [level, setLevel] = useState(1);
-  const [flippedCards, setFlippedCards] = useState([]);
-  const [cards, setCards] = useState([]);
+  const [happyFaceIndex, setHappyFaceIndex] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
 
-  const handleCardClick = (index) => {
-    setFlippedCards([...flippedCards, index]);
-  };
-
-  const resetGame = () => {
+  const startNewGame = () => {
     setLevel(1);
-    setFlippedCards([]);
-    setCards([]);
+    setHappyFaceIndex(Math.floor(Math.random() * level));
+    setGameOver(false);
   };
 
-  const generateCards = () => {
-    let newCards = [];
-    for (let i = 0; i < level; i++) {
-      newCards.push({
-        front: '😐',
-        back: i === 0 ? '😊' : '😢',
-      });
-    }
-    setCards(newCards);
-  };
-
-  const checkIfWon = () => {
-    if (flippedCards.includes(0)) {
-      setTimeout(() => {
+  const handleCardClick = index => {
+    if (index === happyFaceIndex) {
+      if (level === 3) {
+        alert("You win!");
+        startNewGame();
+      } else {
         setLevel(level + 1);
-        setFlippedCards([]);
-      }, 1000);
+        setHappyFaceIndex(Math.floor(Math.random() * level));
+      }
     } else {
-      alert('Game over');
-      resetGame();
+      setGameOver(true);
     }
   };
-
-  React.useEffect(() => {
-    generateCards();
-  }, [level]);
-
-  React.useEffect(() => {
-    if (flippedCards.length === level) {
-      checkIfWon();
-    }
-  }, [flippedCards]);
 
   return (
-    <div className="game-container">
-      {cards.map((card, index) => (
-        <Card
-          key={index}
-          front={card.front}
-          back={card.back}
-          onClick={() => handleCardClick(index)}
-          flipped={flippedCards.includes(index)}
-        />
-      ))}
+    <div className="game">
+      {gameOver ? (
+        <div>
+          <p>Game over</p>
+          <button onClick={startNewGame}>Start new game</button>
+        </div>
+      ) : (
+        <>
+          <p>Level {level}</p>
+          {Array.from({ length: level }, (_, index) => (
+            <Card
+              key={index}
+              level={level}
+              handleClick={() => handleCardClick(index)}
+              flipped={index === happyFaceIndex}
+              front={"📎"}
+              back={index === happyFaceIndex ? "😊" : "😢"}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 };
