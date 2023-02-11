@@ -2,5 +2,6 @@
 Trying out Vite 
 ## TO DO
 - Fix it
-- PokeAPI?
-- Pokestewdio site
+- PokeAPI
+- Card component
+- pokestewdio
